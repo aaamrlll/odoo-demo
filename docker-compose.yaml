@@ -30,7 +30,7 @@ services:
     volumes:
       - odoo-data:/var/lib/odoo
     environment:
-      TZ: America/Chicago
+      TZ: America/Monterrey
 
 volumes:
   odoo-db-data:
