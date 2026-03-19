@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: Restepo2!
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ODOO_DEB_URL: "https://drive.usercontent.google.com/download?id=1Va2HLhNiU_gCAkldyLopBfbDtN_bzbCN&export=download&authuser=0&confirm=t&uuid=d6176b2f-f59f-424c-a55b-209db005e617&at=AGN2oQ3KC2wLc5Fg4k4nUN9bKHMb%3A1773900320495"
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8069:8069"
+      - "8072:8072"
+    volumes:
+      - odoo-data:/var/lib/odoo
+      - ./config:/etc/odoo
+    environment:
+      TZ: America/Chicago
+
+volumes:
+  odoo-db-data:
+  odoo-data:
